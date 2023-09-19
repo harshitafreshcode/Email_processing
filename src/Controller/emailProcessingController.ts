@@ -69,11 +69,8 @@ const REFRESH_TOKEN = "1//04NSGwowVQIUJCgYIARAAGAQSNwF-L9IriO51tYS3QVxBW4X37QPKp
 //     process.env.CLIENT_SECRET,
 //     process.env.REDIRECT_URI
 // );
-console.log('2');
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-
 
 
 // List messages matching a specific query
@@ -84,7 +81,6 @@ async function listMessages(query: any) {
         userId: 'me',
         q: query,
     });
-    console.log(response.data.messages, 'response.data.messages');
     return response.data.messages;
 }
 
@@ -108,23 +104,23 @@ async function downloadAttachments(message: any) {
         console.log('No attachments found in this email.');
         return;
     }
+    console.log(parts, 'parts');
+    // return parts
 
-    return parts
+      for (const part of parts) {
+        if (part.filename && part.filename.length > 0) {
+          const attachment = await gmail.users.messages.attachments.get({
+            userId: 'me',
+            messageId: message.id,
+            id: part.body.attachmentId,
+          });
 
-    //   for (const part of parts) {
-    //     if (part.filename && part.filename.length > 0) {
-    //       const attachment = await gmail.users.messages.attachments.get({
-    //         userId: 'me',
-    //         messageId: message.id,
-    //         id: part.body.attachmentId,
-    //       });
-
-    //       const data = attachment.data;
-    //       const fileData = Buffer.from(data, 'base64');
-    //       fs.writeFileSync(part.filename, fileData);
-    //       console.log(`Attachment "${part.filename}" downloaded.`);
-    //     }
-    //   }
+          const data = attachment.data;
+          const fileData = Buffer.from(data, 'base64');
+          fs.writeFileSync(part.filename, fileData);
+          console.log(`Attachment "${part.filename}" downloaded.`);
+        }
+      }
 }
 
 
@@ -132,7 +128,7 @@ export const authForEmail = async (req: Request, res: Response) => {
     try {
 
         // await authorize();
-        const query = 'subject:"hr@freshcodes.in';
+        const query = 'from:hello.test2512@gmail.com';
         const messages = await listMessages(query);
 
         if (messages.length === 0) {
