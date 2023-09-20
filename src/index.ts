@@ -3,6 +3,7 @@ import { AppDataSource } from "./config/db";
 import routes from "./routes/routes";
 import swaggerSpec1 from "./Swagger/swaggerConfig";
 import bodyParser from "body-parser";
+import { watchGmailInbox } from "./Controller/emailProcessingController";
 
 const express = require('express');
 const app = express();
@@ -26,7 +27,8 @@ AppDataSource.initialize().then(() => {
     console.log("Connected to Postgres Database")
 
     app.listen(port, () => {
-        console.log(`Server listening on port http://${port}`)
+        watchGmailInbox()
+        console.log(`Server listening on port http://localhost:${port}`)
     })
 
 }).catch((error) => {

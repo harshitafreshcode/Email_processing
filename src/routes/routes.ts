@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express'
-import { authForEmail, insertExceldata } from '../Controller/emailProcessingController';
+import { notifications, insertExceldata } from '../Controller/emailProcessingController';
 const router = express.Router()
 
 router.post('/add-excel-data', insertExceldata)
-router.post('/auth-mail', authForEmail)
+router.get('/notifications', notifications)
 export default router;
 
 
