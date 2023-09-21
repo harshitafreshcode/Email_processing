@@ -3,7 +3,9 @@ import { ErrorResponse, successResponse } from "../helpers/apiResponse";
 import { addExcelData } from "../model/email.model";
 import { AppDataSource } from "../config/db";
 import { ExcelData } from "../entities/excelData";
-import { videointelligence } from "googleapis/build/src/apis/videointelligence";
+// import { videointelligence } from "googleapis/build/src/apis/videointelligence";
+
+
 const xlsx = require('xlsx');
 
 const { google } = require('googleapis');
@@ -187,5 +189,30 @@ export const notifications = async (req: Request, res: Response) => {
     } catch (e) {
         console.log(e, 'error');
         ErrorResponse(res, e);
+    }
+};
+
+
+export const test = async () => {
+    try {
+
+        const query = 'from:hello.test2512@gmail.com';
+        const messages = await listMessages(query);
+        console.log(messages, messages?.length, 'messages');
+        if (!messages || messages?.length === 0) {
+            console.log('No email found.');
+        }
+
+        const messageId = messages[0].id;
+        const message = await getMessage(messageId);
+
+        console.log('Email Subject:', message.subject);
+        console.log('Email Body:', message.snippet);
+
+        const data = await getAttachments(message);
+
+        console.log("Data Get Successfully");
+    } catch (e) {
+        console.log(e, 'error');
     }
 };
