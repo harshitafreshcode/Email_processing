@@ -146,24 +146,38 @@ async function getAttachments(message: any) {
 
 export async function watchGmailInbox() {
     const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
-    await gmail.users.watch(
-        {
-            userId: 'me',
-            resource: {
-                topicName: "projects/login-with-goggle-398805/topics/email-process", // Use the actual topic name
-                callbackUrl: "http://localhost:3002/notifications"
-            },
+    // await gmail.users.watch(
+    //     {
+    //         userId: 'me',
+    //         resource: {
+    //             topicName: "projects/login-with-goggle-398805/topics/email-process", // Use the actual topic name
+    //             callbackUrl: "http://localhost:3002/notifications"
+    //         },
+    //     },
+    //     (err: any, res: any) => {
+    //         if (err) {
+    //             console.error('Error watching Gmail inbox:', err);
+    //             return;
+    //         }
+    //         console.log('Watch request successful. You will receive notifications.', res);
+    //         return res
+    //     }
+    // );
+
+
+    const res = await gmail.users.watch({
+        userId: 'me',
+        requestBody: {
+            'labelIds': ['INBOX'],
+            topicName: "projects/login-with-goggle-398805/topics/email-process"
         },
-        (err: any, res: any) => {
-            if (err) {
-                console.error('Error watching Gmail inbox:', err);
-                return;
-            }
-            console.log('Watch request successful. You will receive notifications.', res);
-            return res
-        }
-    );
+    });
+
+    console.log('Watch response:', res.data);
+
 }
+
+
 
 export const notifications = async (req: Request, res: Response) => {
     try {
